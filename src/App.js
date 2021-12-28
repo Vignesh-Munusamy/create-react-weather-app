@@ -1,23 +1,43 @@
-import logo from './logo.svg';
 import './App.css';
+import React,{useState} from 'react';
+import DisplayWeather from './DisplayWeather.js'
 
 function App() {
+  const [inputval , setInputval]=useState('');
+  const [weather , setWeather]=useState([]);
+  const Add = () =>{
+    fetch(`https://api.openweathermap.org/data/2.5/weather?q=${inputval}&units=metric&APPID=4fba502b8351f798d0dc3a25f2a44769`)
+    .then(response => response.json())
+    .then(response =>{
+      setWeather((weather) => [...weather,response]);
+      setInputval('');
+  
+  });
+  
+}
+
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <div className="search-main-box">
+        <div>
+      <input type="text" className="input-button" value={inputval} onChange={e =>setInputval( e.target.value)} placeholder='Enter Location'  />
+      </div>
+      <div>
+      <button className="submit-button" onClick={Add}>ADD</button>
+</div>
+      </div>
+      <div className='wrap-condainer'>
+      {(weather.length > 0)?
+       ( 
+         weather.map((item, index) =>(
+            <div className='div-box' key={index}> 
+              <DisplayWeather data={item} />
+             </div>
+             )
+      )  
+      ): ('')}
+      </div>
     </div>
   );
 }
